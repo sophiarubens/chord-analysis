@@ -91,7 +91,8 @@ for k,band_chunk_floor in enumerate(band_chunk_floors):
     crosspol_Calgary_vs_differential_MED[k,:]=[np.median(crosspol_vals_this_freq_chunk[:-2]),
                                                np.median(crosspol_vals_this_freq_chunk[-2:])]
 
-    del A,coh,vis,freq_centre,prods,labels,times,frac_lost,frames_added,t_unix,valid,chans,rows,power # free up some RAM
+    del data, vis, prods, labels, times, frac_lost, frames_added, t_unix, valid, block, ok, \
+        chans, rows, vis_t, auto, is_auto, power, coh, A, crosspol_vals_this_freq_chunk         # free up some RAM
     t1=time.time()
     print("processed chunk k={} in {:.2f} s".format(k,t1-t0))
 
