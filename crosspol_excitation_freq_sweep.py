@@ -5,9 +5,11 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from matplotlib import pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib import color_sequences as cseq
 from matplotlib.colors import BoundaryNorm
 import os
 import time
+import cmasher as cmr
 
 acq_dir="/home/sophiaru/projects/rrg-kmsmith/chord-data/kotekan_vis_files/subset/"
 acq="acq_20261025_233145_198439631/"
@@ -73,7 +75,7 @@ for k,band_chunk_floor in enumerate(band_chunk_floors):
     A[prods["input_a"], prods["input_b"]] = coh
     A[np.diag_indices(n_el)] = np.nan                   # autos are 1 by definition
 
-    im = axs[i,j].imshow(A, norm=mcolors.LogNorm(vmin=1e-3, vmax=1), cmap="viridis",
+    im = axs[i,j].imshow(A, norm=mcolors.LogNorm(vmin=1e-3, vmax=1), cmap=cmr.eclipse,
                         interpolation="nearest")
     plt.colorbar(im,ax=axs[i,j])
     axs[i,j].set_title("{:d}-{:d} MHz".format(band_chunk_floor,band_chunk_floor+chunk_width))
@@ -102,14 +104,18 @@ fig.suptitle(f"CHORD-64 Tau A acquisition time snapshot at {t_idx} ({t_str})")
 fig.tight_layout()
 plt.savefig("vis_snapshots_freq_sweep.png")
 
-
+colour_sequence=cseq["Accent"]
 
 np.save("crosspol_Calgary_vs_differential_MEAN.npy",crosspol_Calgary_vs_differential_MEAN)
 np.save("crosspol_Calgary_vs_differential_MEDIAN.npy",crosspol_Calgary_vs_differential_MED)
 band_chunk_mids=band_chunk_floors+0.5*chunk_width
 plt.figure()
-plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MEAN[:,0]),label="Calgary LNA")
-plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MEAN[:,1]),label="differential LNA")
+plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MEAN[:,0]),
+            label="Calgary LNA",
+            facecolor=colour_sequence[0])
+plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MEAN[:,1]),
+            label="differential LNA",
+            facecolor=colour_sequence[1])
 plt.xlabel("freq (MHz)")
 plt.ylabel("excitation amplitude (dB down from autocorr)")
 plt.legend()
@@ -117,8 +123,12 @@ plt.title("Crosspol excitation for both CHORD LNAs (mean across antennas)")
 plt.savefig("crosspol_chromaticity_mean.png")
 
 plt.figure()
-plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MED[:,0]),label="Calgary LNA")
-plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MED[:,1]),label="differential LNA")
+plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MED[:,0]),
+            label="Calgary LNA",
+            facecolor=colour_sequence[0])
+plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MED[:,1]),
+            label="differential LNA",
+            facecolor=colour_sequence[1])
 plt.xlabel("freq (MHz)")
 plt.ylabel("excitation amplitude (dB down from autocorr)")
 plt.legend()
