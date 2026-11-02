@@ -12,7 +12,8 @@ import time
 import cmasher as cmr
 
 acq_dir="/home/sophiaru/projects/rrg-kmsmith/chord-data/kotekan_vis_files/subset/"
-acq="acq_20261025_233145_198439631/"
+# acq="acq_20261025_233145_198439631/"
+acq="acq_20261101_014834_710489386"
 
 reader = andata.CorrReader(acq_dir+acq+"vis_*.h5")
 reader.select_input_type("dish")
