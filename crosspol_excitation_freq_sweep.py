@@ -12,8 +12,8 @@ import time
 import cmasher as cmr
 
 acq_dir="/home/sophiaru/projects/rrg-kmsmith/chord-data/kotekan_vis_files/subset/"
-# acq="acq_20261025_233145_198439631/"
-acq="acq_20261101_014834_710489386"
+acq="acq_20261025_233145_198439631/"
+# acq="acq_20261101_014834_710489386" # looks promising in the choco overview, but the data is not currently on Fir yet
 
 reader = andata.CorrReader(acq_dir+acq+"vis_*.h5")
 reader.select_input_type("dish")
@@ -74,8 +74,8 @@ for k,band_chunk_floor in enumerate(band_chunk_floors):
     
     A = np.full((n_el, n_el), np.nan)
     A[prods["input_a"], prods["input_b"]] = coh
-    A[np.diag_indices(n_el)] = np.nan                   # autos are 1 by definition
-    np.save("vis_snapshot_acq_{}_{}_{}_MHz.npy".format(acq,band_chunk_floor,chunk_width))
+    A[np.diag_indices(n_el)] = 1                   # autos are 1 by definition
+    np.save("vis_snapshot_{}_{}_{}_MHz.npy".format(acq[:-1],band_chunk_floor,band_chunk_floor+chunk_width), A)
 
     im = axs[i,j].imshow(A, norm=mcolors.LogNorm(vmin=1e-3, vmax=1), cmap=cmr.eclipse,
                         interpolation="nearest")
@@ -111,8 +111,8 @@ plt.savefig("vis_snapshots_freq_sweep.png")
 
 colour_sequence=cseq["Accent"]
 
-np.save("crosspol_Calgary_vs_differential_MEAN.npy",crosspol_Calgary_vs_differential_MEAN)
-np.save("crosspol_Calgary_vs_differential_MEDIAN.npy",crosspol_Calgary_vs_differential_MED)
+np.save("crosspol_{}_Calgary_vs_differential_MEAN.npy".format(acq[:-1]),crosspol_Calgary_vs_differential_MEAN)
+np.save("crosspol_{}_Calgary_vs_differential_MEDIAN.npy".format(acq[:-1]),crosspol_Calgary_vs_differential_MED)
 band_chunk_mids=band_chunk_floors+0.5*chunk_width
 plt.figure()
 plt.scatter(band_chunk_mids,20*np.log10(crosspol_Calgary_vs_differential_MEAN[:,0]),
