@@ -75,6 +75,7 @@ for k,band_chunk_floor in enumerate(band_chunk_floors):
     A = np.full((n_el, n_el), np.nan)
     A[prods["input_a"], prods["input_b"]] = coh
     A[np.diag_indices(n_el)] = np.nan                   # autos are 1 by definition
+    np.save("vis_snapshot_acq_{}_{}_{}_MHz.npy".format(acq,band_chunk_floor,chunk_width))
 
     im = axs[i,j].imshow(A, norm=mcolors.LogNorm(vmin=1e-3, vmax=1), cmap=cmr.eclipse,
                         interpolation="nearest")
@@ -91,14 +92,16 @@ for k,band_chunk_floor in enumerate(band_chunk_floors):
     crosspol_Calgary_vs_differential_MED[k,:]=[np.median(crosspol_vals_this_freq_chunk[:-2]),
                                                np.median(crosspol_vals_this_freq_chunk[-2:])]
 
+    if k==N_chunks-1:
+        ticks = np.arange(0, n_el, 8)
+        axs[-1,0].set_xticks(ticks, [labels[i] for i in ticks], rotation=90)
+        axs[-1,0].set_yticks(ticks, [labels[i] for i in ticks])
+
     del data, vis, prods, labels, times, frac_lost, frames_added, t_unix, valid, block, ok, \
         chans, rows, vis_t, auto, is_auto, power, coh, A, crosspol_vals_this_freq_chunk         # free up some RAM
     t1=time.time()
     print("processed chunk k={} in {:.2f} s".format(k,t1-t0))
 
-ticks = np.arange(0, n_el, 8)
-axs[-1,0].set_xticks(ticks, [labels[i] for i in ticks], rotation=90)
-axs[-1,0].set_yticks(ticks, [labels[i] for i in ticks])
 axs[-1,0].set_xlabel("input b")
 axs[-1,0].set_ylabel("input a")
 
